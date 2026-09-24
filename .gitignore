@@ -1,0 +1,18 @@
+# Build output
+dist/
+build/
+*.spec
+quota_tray.ico
+version_*.txt
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+.pytest_cache/
+
+# Logs
+*.log
+
+# LGPL source archives attached to releases (large, not committed)
+release-assets/

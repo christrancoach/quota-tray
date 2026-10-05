@@ -35,6 +35,14 @@ def test_uninstall_removes_shortcuts_without_touching_real_settings(tmp_path):
     assert not menu.exists()
 
 
+def test_run_cmd_keeps_quoted_paths_intact(tmp_path):
+    folder = tmp_path / "Programs" / "Quota Tray"     # a space, like a real install path
+    folder.mkdir(parents=True)
+    out = folder / "out.txt"
+    assert install.run_cmd(f'echo ok> "{out}"').wait(timeout=30) == 0
+    assert out.read_text().strip() == "ok"
+
+
 def test_not_offered_when_running_from_source():
     assert install.running_exe_dir() is None and not install.is_installed_copy()
 

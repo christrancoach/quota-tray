@@ -113,13 +113,19 @@ def uninstall(dest: Path | None = None, menu: Path | None = None, *, deregister:
     if not remove_folder:
         return
     # The running exe can't delete itself: stop both apps and remove the folder once we've exited.
-    subprocess.Popen(["cmd", "/c", "timeout /t 2 /nobreak >nul & taskkill /F /IM QuotaWidget.exe >nul 2>&1"
-                      " & taskkill /F /IM QuotaTray.exe >nul 2>&1"], creationflags=CREATE_NO_WINDOW)
-    subprocess.Popen(["cmd", "/c", f'timeout /t 4 /nobreak >nul & rmdir /s /q "{dest}"'],
-                     creationflags=CREATE_NO_WINDOW)
+    run_cmd("timeout /t 2 /nobreak >nul & taskkill /F /IM QuotaWidget.exe >nul 2>&1"
+            " & taskkill /F /IM QuotaTray.exe >nul 2>&1")
+    run_cmd(f'timeout /t 4 /nobreak >nul & rmdir /s /q "{dest}"')
 
 
 def launch_installed_and_exit(exe: Path, quit_app) -> None:
     """Start the installed copy once this one has quit (single-instance guards would stop it otherwise)."""
-    subprocess.Popen(["cmd", "/c", f'timeout /t 2 /nobreak >nul & start "" "{exe}"'], creationflags=CREATE_NO_WINDOW)
+    run_cmd(f'timeout /t 2 /nobreak >nul & start "" "{exe}"')
     quit_app()
+
+
+def run_cmd(script: str) -> subprocess.Popen:
+    """Run a cmd one-liner in the background. Passed as one string because a Popen list would
+    backslash-escape the script's quotes, which cmd doesn't understand ("Windows cannot find '\\'").
+    /s makes cmd strip only the outer quotes and keep the rest as written."""
+    return subprocess.Popen(f'cmd /s /c "{script}"', creationflags=CREATE_NO_WINDOW)

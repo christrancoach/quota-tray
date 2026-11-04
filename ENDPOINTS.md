@@ -23,6 +23,25 @@ Credential formats are just as unofficial: the CLIs can change file layouts or m
 somewhere else in any release. If a card suddenly says "No … login found" right after a CLI
 update, check the file shown in the README table.
 
+## Gemini: not used, and what each route would cost you
+
+quota-tray makes no Gemini quota call. These routes are separate from the app's calls above.
+Ranked from most to least likely to break, as a judgment based on the sources in the
+[Gemini quota guide](docs/gemini-quota.md):
+
+Rank is fragility order, not the route numbers used in the Gemini quota guide.
+
+| Rank | Route | Endpoint | Why it's fragile | What it would show |
+|---|---|---|---|---|
+| 1 | Antigravity CLI (`agy`) | `POST cloudcode-pa.googleapis.com/v1internal:fetchAvailableModels`, described by third-party tools | No documented API. Tokens are kept in the OS keyring. The private call and a report of a base endpoint always showing 100% are not confirmed. | Per-model remaining fraction and reset time, according to third-party reports |
+| 2 | Gemini CLI (Code Assist Standard/Enterprise login) | `POST cloudcode-pa.googleapis.com/v1internal:retrieveUserQuota`, with a project ID | The version is literally `v1internal`. Login defaults to `~/.gemini/oauth_creds.json`, unless encrypted storage is enabled. Refreshing needs the CLI's own OAuth client. Free and AI Pro/Ultra logins no longer work in Gemini CLI. Source only; no live call tested. | Per-model `remainingFraction`, `resetTime`, and optional `remainingAmount` |
+| 3 | Google Cloud project (Gemini API or Vertex AI) | Cloud Quotas API for limits; Cloud Monitoring `serviceruntime.googleapis.com/quota/*` for usage | Documented APIs. Needs a project ID and credentials with access to its quotas and metrics. Exact Gemini API metric names are not confirmed. | Project usage against limits, not a person's allowance |
+
+An AI Studio API key uses project limits too. AI Studio shows the limits; we found no documented
+remaining-quota API. The Gemini app has no documented
+usage API; read Settings, then Usage Limits. Antigravity CLI provides an interactive `/usage` panel.
+See the guide for sources and caveats. Treat any failure as unknown, never zero left.
+
 ## Usage report: the price list download
 
 The usage report makes one outbound request, a read-only download of LiteLLM's public price list:

@@ -36,9 +36,12 @@ It comes in two parts. Use either or both:
 | ChatGPT (Codex) | Codex CLI | Weekly Codex limit (and the 5-hour one when offered), banked resets |
 | Grok | Grok CLI | Weekly limit, per-product usage |
 
-**Gemini is not supported.** Google offers no supported way to read Gemini quota. (The usage
-report does count Gemini CLI tokens from its local logs; that reads files on your PC, not a quota
-API.)
+**Gemini is not supported.** There is no supported API for a personal Gemini quota. Free and
+Google AI Pro/Ultra logins moved from Gemini CLI to Antigravity CLI on 2026-06-18. Neither the
+Gemini app nor Antigravity CLI has a documented usage API. Gemini API limits and Google Cloud
+quota tools cover projects, not a person's allowance. The [Gemini quota guide](https://github.com/christrancoach/quota-tray/blob/main/docs/gemini-quota.md)
+lists the routes and why none is built in. (The usage report does count Gemini CLI tokens from
+its local logs; that reads files on your PC, not a quota API.)
 
 ## Quick start
 
